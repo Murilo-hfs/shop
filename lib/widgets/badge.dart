@@ -18,29 +18,29 @@ class Badge extends StatelessWidget {
       children: <Widget>[
         child,
         Positioned(
-          right: 8,
-          top: 8,
-        //   // child: Container(
-        //   //   height:200,
-        //   //   padding: EdgeInsets.all(2),
-        //   //   decoration: BoxDecoration(
-        //   //     borderRadius: BorderRadius.circular(10),
+          right: 2,
+          top: 4,
+          child: Container(
+          
+            padding: EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: color !=null ? color : Theme.of(context).accentColor,
               
-        //   //   ),
-        //   //   // constraints: BoxConstraints(
-        //   //   //   minHeight: 16,
-        //   //   //   minWidth: 16,
-        //   //   // ),
+            ),
+            constraints: BoxConstraints(
+              minHeight: 3,
+              minWidth: 5,
+            ),
            child:Text(
               value,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: color !=null ? color : Theme.of(context).accentColor,
-                fontSize: 6
+                fontSize: 15
               ),
             ),
           ),
-          // ) ,
+          ) ,
       ],
     );
   }
