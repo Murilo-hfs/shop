@@ -1,10 +1,10 @@
-import 'dart:math';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 import 'package:shop/providers/cart.dart';
 
 class Order {
-
   final String id;
   final double total;
   final List<CartItem> products;
@@ -18,9 +18,12 @@ class Order {
 }
 
 class Orders with ChangeNotifier {
+  final String _baseUrl =
+      'https://shop-cod3r-29080-default-rtdb.firebaseio.com/orders';
+
   List<Order> _items = [];
 
-  List<Order> get items{
+  List<Order> get items {
     return [..._items];
   }
 
@@ -28,13 +31,30 @@ class Orders with ChangeNotifier {
     return _items.length;
   }
 
-  void addOrder(List<CartItem> products, double total) {
-    _items.insert(0, Order(
-      id: Random().nextDouble().toString(),
-      total: total,
-      date: DateTime.now(),
-      products: products,
-    ),
+  Future<void> addOrder(Cart cart) async {
+    final date = DateTime.now();
+    final response = await http.post(
+      '$_baseUrl.json',
+      body: json.encode({
+        'total': cart.totalAmount,
+        'date': date.toIso8601String(),
+        'products': cart.items.values.map((cartItem) => {
+          'id': cartItem.id,
+          'productId': cartItem.productId,
+          'title': cartItem.title,
+          'quantity': cartItem.quantity,
+          'price': cartItem.price,
+        }).toList()
+      }),
+    );
+    _items.insert(
+      0,
+      Order(
+        id: json.decode(response.body)['name'],
+        total: cart.totalAmount,
+        date: date,
+        products: cart.items.values.toList(),
+      ),
     );
 
     notifyListeners();
