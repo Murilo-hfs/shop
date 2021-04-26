@@ -1,51 +1,61 @@
-import 'dart:math';
-
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:shop/data/dummy_products.dart';
 import 'package:shop/providers/product.dart';
+import 'package:http/http.dart' as http;
 
-class Products with ChangeNotifier{
-
+class Products with ChangeNotifier {
   List<Product> _items = DUMMY_PRODUCTS;
 
-  List<Product> get items => [... _items];
+  List<Product> get items => [..._items];
 
   List<Product> get favoriteItems {
     return _items.where((prod) => prod.isFavorite).toList();
-  } 
-  
+  }
+
   int get itemsCount {
     return _items.length;
   }
-   
-  void addProduct(Product newProduct) {
+
+  Future<void> addProduct(Product newProduct) {
+    const url = 'https://shop-cod3r-29080-default-rtdb.firebaseio.com/products.json';
+    return http.post(
+      url,
+      body: json.encode({
+        'title': newProduct.title,
+        'description': newProduct.description,
+        'price': newProduct.price,
+        'imageUrl': newProduct.imageUrl,
+        'isFavorite': newProduct.isFavorite,
+      }),
+    ).then((response) {
     _items.add(Product(
-      id: Random().nextDouble().toString(),
-      title: newProduct.title,
-      description: newProduct.description,
-      price: newProduct.price,
-      imageUrl: newProduct.imageUrl
-    )
-    );
+        id: json.decode(response.body)['name'],
+        title: newProduct.title,
+        description: newProduct.description,
+        price: newProduct.price,
+        imageUrl: newProduct.imageUrl));
     notifyListeners();
+    });
   }
 
+
   void updateProduct(Product product) {
-    if(product == null || product.id == null) {
+    if (product == null || product.id == null) {
       return;
     }
     final index = _items.indexWhere((prod) => prod.id == product.id);
-    if(index >=0) {
+    if (index >= 0) {
       _items[index] = product;
       notifyListeners();
     }
- }
+  }
 
- void deleteProduct(String id) {
-   final index = _items.indexWhere((prod) => prod.id == id);
-    if(index >=0) {
-   _items.removeWhere((prod) => prod.id == id);
-   notifyListeners();
+  void deleteProduct(String id) {
+    final index = _items.indexWhere((prod) => prod.id == id);
+    if (index >= 0) {
+      _items.removeWhere((prod) => prod.id == id);
+      notifyListeners();
     }
- }
+  }
 }
