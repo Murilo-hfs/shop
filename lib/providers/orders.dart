@@ -31,6 +31,38 @@ class Orders with ChangeNotifier {
     return _items.length;
   }
 
+  Future<void> loadOrders() async {
+    
+    List<Order> loadedItems = [];
+    final response = await http.get('$_baseUrl.json');
+    Map<String, dynamic> data = json.decode(response.body);
+
+    loadedItems.clear();
+    if (data != null) {
+      data.forEach((orderId, orderData) {
+        loadedItems.add(
+          Order(
+            id: orderId,
+            total: orderData['total'],
+            date: DateTime.parse(orderData['date']),
+            products: (orderData['products'] as List<dynamic>).map((item) {
+              return CartItem(
+                id: item['id'],
+                productId: item['productid'],
+                title: item['title'],
+                quantity: item['quantity'],
+                price: item['price'],
+              );
+            }).toList(),
+          ),
+        );
+      });
+      notifyListeners();
+    }
+    _items = loadedItems.reversed.toList();
+    return Future.value();
+  }
+
   Future<void> addOrder(Cart cart) async {
     final date = DateTime.now();
     final response = await http.post(
@@ -38,13 +70,15 @@ class Orders with ChangeNotifier {
       body: json.encode({
         'total': cart.totalAmount,
         'date': date.toIso8601String(),
-        'products': cart.items.values.map((cartItem) => {
-          'id': cartItem.id,
-          'productId': cartItem.productId,
-          'title': cartItem.title,
-          'quantity': cartItem.quantity,
-          'price': cartItem.price,
-        }).toList()
+        'products': cart.items.values
+            .map((cartItem) => {
+                  'id': cartItem.id,
+                  'productId': cartItem.productId,
+                  'title': cartItem.title,
+                  'quantity': cartItem.quantity,
+                  'price': cartItem.price,
+                })
+            .toList()
       }),
     );
     _items.insert(
