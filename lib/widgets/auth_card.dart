@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/exceptions/auth_exception.dart';
-import 'package:shop/widgets/auth.dart';
+import 'package:shop/providers/auth.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -15,6 +15,7 @@ class _AuthCardState extends State<AuthCard> {
   bool _isLoading = false;
   AuthMode _authMode = AuthMode.Login;
   final _passwordController = TextEditingController();
+
   final Map<String, String> _authData = {
     'email': '',
     'password': '',
@@ -24,7 +25,7 @@ class _AuthCardState extends State<AuthCard> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Ocorreu um erro inesperado'),
+        title: Text('Ocorreu um erro'),
         content: Text(msg),
         actions: <Widget>[
           TextButton(
@@ -45,9 +46,11 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
+
     _form.currentState.save();
 
     Auth auth = Provider.of(context, listen: false);
+
     try {
       if (_authMode == AuthMode.Login) {
         await auth.login(
@@ -114,7 +117,6 @@ class _AuthCardState extends State<AuthCard> {
               TextFormField(
                 decoration: InputDecoration(labelText: 'Senha'),
                 controller: _passwordController,
-                keyboardType: TextInputType.emailAddress,
                 obscureText: true,
                 validator: (value) {
                   if (value.isEmpty || value.length < 5) {
@@ -127,7 +129,6 @@ class _AuthCardState extends State<AuthCard> {
               if (_authMode == AuthMode.Signup)
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Confirmar Senha'),
-                  keyboardType: TextInputType.emailAddress,
                   obscureText: true,
                   validator: _authMode == AuthMode.Signup
                       ? (value) {
