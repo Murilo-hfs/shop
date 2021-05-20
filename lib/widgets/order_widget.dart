@@ -19,7 +19,7 @@ class _OrderWidgetState extends State<OrderWidget> {
       child: Column(
         children: [
           ListTile(
-            title: Text('R\$ ${widget.order.total}'),
+            title: Text('R\$ ${widget.order.total.toStringAsFixed(2)}'),
             subtitle: Text(
               DateFormat('dd/MM/yyy hh:mm').format(widget.order.date),
             ),
@@ -27,7 +27,7 @@ class _OrderWidgetState extends State<OrderWidget> {
               icon: Icon(Icons.expand_more),
               onPressed: () {
                 setState(() {
-                  _expanded =! _expanded;
+                  _expanded = !_expanded;
                 });
               },
             ),

@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop/utils/constants.dart';
+
 import 'package:shop/providers/cart.dart';
 
 class Order {
@@ -9,6 +11,7 @@ class Order {
   final double total;
   final List<CartItem> products;
   final DateTime date;
+
   Order({
     this.id,
     this.total,
@@ -19,11 +22,12 @@ class Order {
 
 class Orders with ChangeNotifier {
   final String _baseUrl =
-      'https://shop-cod3r-29080-default-rtdb.firebaseio.com/orders';
+      '${Constants().BASE_API_URL}/orders';
   String _token;
   String _userId;
   List<Order> _items = [];
-  Orders([this._token, this._userId,this._items = const []]);
+
+  Orders([this._token,this._userId,this._items = const []]);
 
   List<Order> get items {
     return [..._items];
@@ -34,12 +38,11 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> loadOrders() async {
-    
+
     List<Order> loadedItems = [];
-    final response = await http.get('$_baseUrl/$_userId.json?auth=$_token');
+    final response = await http.get('$_baseUrl/$_userId.json?=auth$_token');
     Map<String, dynamic> data = json.decode(response.body);
 
-    loadedItems.clear();
     if (data != null) {
       data.forEach((orderId, orderData) {
         loadedItems.add(
@@ -50,10 +53,10 @@ class Orders with ChangeNotifier {
             products: (orderData['products'] as List<dynamic>).map((item) {
               return CartItem(
                 id: item['id'],
-                productId: item['productid'],
-                title: item['title'],
-                quantity: item['quantity'],
                 price: item['price'],
+                productId: item['productId'],
+                quantity: item['quantity'],
+                title: item['title'],
               );
             }).toList(),
           ),
@@ -83,6 +86,7 @@ class Orders with ChangeNotifier {
             .toList()
       }),
     );
+
     _items.insert(
       0,
       Order(

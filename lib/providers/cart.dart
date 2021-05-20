@@ -11,45 +11,45 @@ class CartItem {
   final double price;
 
   CartItem({
-   @required this.id,
-   @required this.productId,
-   @required this.title,
-   @required this.quantity,
-   @required this.price,
+    @required this.id,
+    @required this.productId,
+    @required this.title,
+    @required this.quantity,
+    @required this.price,
   });
 }
 
-class Cart with ChangeNotifier{
+class Cart with ChangeNotifier {
   Map<String, CartItem> _items = {};
 
-  Map<String, CartItem> get items{
+  Map<String, CartItem> get items {
     return {..._items};
   }
 
-int get itemsCount {
-  return _items.length;
+  int get itemsCount {
+    return _items.length;
   }
 
-double get totalAmount {
-  double total = 0.0;
-  _items.forEach((key, cartItem) {
-    total += cartItem.price * cartItem.quantity;
-   });
-   return total;
-}
+  double get totalAmount {
+    double total = 0.0;
+    _items.forEach((key, cartItem) {
+      total += cartItem.price * cartItem.quantity;
+    });
+    return total;
+  }
 
-
-  void addItem(Product product){
-    if(_items.containsKey(product.id)) {
+  void addItem(Product product) {
+    if (_items.containsKey(product.id)) {
       _items.update(
-        product.id, 
+        product.id,
         (existingItem) => CartItem(
-        id: existingItem.id,
-        productId: product.id,
-        title: existingItem.title,
-        quantity: existingItem.quantity +1,
-        price: existingItem.price ),
-        );
+          id: existingItem.id,
+          productId: product.id,
+          title: existingItem.title,
+          quantity: existingItem.quantity + 1,
+          price: existingItem.price,
+        ),
+      );
     } else {
       _items.putIfAbsent(
         product.id,
@@ -57,31 +57,32 @@ double get totalAmount {
           id: Random().nextDouble().toString(),
           productId: product.id,
           title: product.title,
-          quantity: 1,
           price: product.price,
+          quantity: 1,
         ),
-        );
+      );
     }
 
     notifyListeners();
   }
+
   void removeSingleItem(productId) {
-    if(!_items.containsKey(productId)) {
+    if (!_items.containsKey(productId)) {
       return;
     }
 
-    if(_items[productId].quantity == 1) {
+    if (_items[productId].quantity == 1) {
       _items.remove(productId);
     } else {
       _items.update(
-        productId, 
+        productId,
         (existingItem) => CartItem(
-        id: existingItem.id,
-        productId: existingItem.productId,
-        title: existingItem.title,
-        quantity: existingItem.quantity -1,
-        price: existingItem.price ),
-        );
+            id: existingItem.id,
+            productId: existingItem.productId,
+            title: existingItem.title,
+            quantity: existingItem.quantity - 1,
+            price: existingItem.price),
+      );
     }
     notifyListeners();
   }
@@ -91,9 +92,8 @@ double get totalAmount {
     notifyListeners();
   }
 
-  void clearCart() {
+  void clear() {
     _items = {};
     notifyListeners();
   }
-
 }

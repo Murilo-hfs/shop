@@ -1,7 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
+import 'package:shop/utils/constants.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -30,11 +31,12 @@ class Product with ChangeNotifier {
 
     try {
       final url =
-          'https://shop-cod3r-29080-default-rtdb.firebaseio.com/userFavorite/$userId/$id.json?auth=$token';
+          '${Constants().BASE_API_URL}/userFavorites/$userId/$id.json?auth=$token';
       final response = await http.put(
         url,
-        body: json.encode({isFavorite}),
+        body: json.encode(isFavorite),
       );
+
       if (response.statusCode >= 400) {
         _toggleFavorite();
       }

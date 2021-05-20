@@ -3,12 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:shop/providers/product.dart';
 import 'package:shop/providers/products.dart';
 
-class ProductFormScrenn extends StatefulWidget {
+class ProductFormScreen extends StatefulWidget {
   @override
-  _ProductFormScrennState createState() => _ProductFormScrennState();
+  _ProductFormScreenState createState() => _ProductFormScreenState();
 }
 
-class _ProductFormScrennState extends State<ProductFormScrenn> {
+class _ProductFormScreenState extends State<ProductFormScreen> {
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _imageUrlFocusNode = FocusNode();

@@ -11,10 +11,11 @@ class AuthException implements Exception {
   };
   
   final String key;
+
   const AuthException(this.key);
 
   @override
-  String toString(){
+  String toString() {
     if(errors.containsKey(key)){
     return errors[key];
     } else {

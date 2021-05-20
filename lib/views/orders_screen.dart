@@ -4,7 +4,7 @@ import 'package:shop/providers/orders.dart';
 import 'package:shop/widgets/app_drawer.dart';
 import 'package:shop/widgets/order_widget.dart';
 
-class OrderScreen extends StatelessWidget {
+class OrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
